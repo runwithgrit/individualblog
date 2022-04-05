@@ -27,13 +27,14 @@ npm run generate    <span class="hljs-comment"># 执行generate</span>
 <p>到此已经配置完成，点击保存。可以在项目界面点击<strong>立即构建</strong>按钮，测试效果。</p></li>
 <li><p>配置 nginx 和 DNS。关于 nginx 基本配置和 https 证书，这里不细讲。如果已有 nginx 服务，只需加一项 server 字段：<span class="image-container"><img data-viewer="" alt="增加一项**server**字段" title="增加一项**server**字段" style="width: 80% !important;" src="https://s1.ax1x.com/2022/04/05/qOdauV.png"><small class="desc">增加一项 <strong>server</strong> 字段</small></span>
 配置 DNS，我用的是 dnspod 免费套餐，可以让境外访问解析到 vercel，默认解析到我们的服务器：<span class="image-container"><img data-viewer="" alt="境内境外分流" title="境内境外分流" style="width: 80% !important;" src="https://s1.ax1x.com/2022/04/05/qOdBEF.png"><small class="desc">境内境外分流</small></span></p></li>
-<li><p>配置 webhook。进入 jenkins 配置界面，Url 一般是 <code>http://yourip:8080/configure</code>，找到 <strong>GitHub</strong>-&gt;<strong>Shared secrets</strong>，选择第 2 步创建的 secret text 凭据，然后保存。打开项目 github 的配置界面，新建一个 Webhook，Payload URL 输入 <code>http://yourip:8080/github-webhook/</code>，secret 字段输入 secret text 凭据的密码，保存：<span class="image-container"><img data-viewer="" alt="github webhook" title="github webhook" style="width: 80% !important;" src="https://s1.ax1x.com/2022/04/05/qOWMz8.png"><small class="desc">github webhook</small></span></p></li>
+<li><p>配置 webhook。进入 jenkins 配置界面，Url 一般是 <code>http://yourip:8080/configure</code>，找到 <strong>GitHub</strong>-&gt;<strong>Shared secrets</strong>，选择第 2 步创建的 secret text 凭据，然后保存：<span class="image-container"><img data-viewer="" alt="用于识别github的webhook" title="用于识别github的webhook" src="https://s1.ax1x.com/2022/04/05/qO4jl6.png"><small class="desc">用于识别 github 的 webhook</small></span>
+打开项目 github 的配置界面，新建一个 Webhook，Payload URL 输入 <code>http://yourip:8080/github-webhook/</code>，secret 字段输入 secret text 凭据的密码，保存：<span class="image-container"><img data-viewer="" alt="github webhook" title="github webhook" style="width: 80% !important;" src="https://s1.ax1x.com/2022/04/05/qOWMz8.png"><small class="desc">github webhook</small></span></p></li>
 </ol>
 <h3><sup class="fake-head" id="id-%E5%AE%8C%E5%B7%A5"></sup><a class="header-link" href="#id-%E5%AE%8C%E5%B7%A5"><p>完工</p></a></h3>
 <p>  以上步骤基本配置好了 CI/CD，实际的工作流程如下：</p>
 <ol>
-<li>用户推送代码到 github</li>
-<li>github 携带 token，请求 <code>http://yourip:8080/github-webhook/</code></li>
-<li>jenkins 收到请求，开始执行构建命令，构建完成后，<code>dist/</code> 文件夹被复制到 <code>/data/www/blog/</code></li>
-<li>用户访问网址，此时 <code>index.html</code> 等文件已经改变，网站已更新</li>
+<li>用户推送代码到 github。</li>
+<li>github 携带 secret，访问 <code>http://yourip:8080/github-webhook/</code>。</li>
+<li>jenkins 收到请求，开始执行构建命令，构建完成后，<code>dist/</code> 文件夹被复制到 <code>/data/www/blog/</code>。</li>
+<li>此时 <code>index.html</code> 等文件已经改变，网站已更新，用户访问网址可看到最新的构建。</li>
 </ol>
