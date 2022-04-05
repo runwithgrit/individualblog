@@ -5,8 +5,7 @@
       <p v-for="p in paragraphs">{{ p }}</p>
     </div>
     <div class="status">
-      Last build &lt;
-      <a target="_blank" :href="commitUrl">{{ sha }}</a>&gt; successed at
+      Last build &lt;<a target="_blank" :href="commitUrl">{{ sha }}</a>&gt; successed at
       <time>{{ buildTime }}</time>
     </div>
   </div>
