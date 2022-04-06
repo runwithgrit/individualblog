@@ -2,7 +2,7 @@
   <div class="about flexc">
     <img :src="outerwilds" alt="bg" />
     <div class="flexc paragraphs">
-      <p v-for="p in paragraphs">{{ p }}</p>
+      <p v-for="p,idx in paragraphs" :key="idx">{{ p }}</p>
     </div>
     <div class="status">
       Last build &lt;<a target="_blank" :href="commitUrl">{{ sha }}</a>&gt; successed at

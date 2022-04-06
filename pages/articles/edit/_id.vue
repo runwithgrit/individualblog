@@ -15,7 +15,7 @@
         <input class="title" v-model="title" placeholder="标题" />
         <div class="tags" @click="$refs.inputTag.focus()">
           <div class="flex s100">
-            <the-tag v-for="tag in inputTags">{{ tag }}</the-tag>
+            <the-tag v-for="tag in inputTags" :key="tag">{{ tag }}</the-tag>
             <p v-if="!inputTags.length">请输入标签</p>
           </div>
           <input

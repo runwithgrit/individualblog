@@ -4,7 +4,7 @@
       <li v-for="year in years" :key="year.year">
         <h2>{{ year.year }}</h2>
         <div class="contain flex">
-          <div class="item flexc" v-for="item in year.items">
+          <div class="item flexc" v-for="item in year.items" :key="item.id">
             <b :title="$options.filters.formattime(item.time)">{{ getTime(item.time) }}</b>
             <NuxtLink :class="{multiple: item.images.length>1}" :to="'/records/'+item.id">
               <lazy-img alt="cover" :src="item.images[0].src"/>

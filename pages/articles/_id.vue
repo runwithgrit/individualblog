@@ -279,7 +279,7 @@ export default {
   .article-detail {
     width: 100%;
     .captain {
-      width: 100vw !important;
+      width: 100% !important;
       max-width: unset;
       min-width: unset;
       >.article-container {
