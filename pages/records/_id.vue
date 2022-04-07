@@ -1,43 +1,54 @@
 <template>
   <div class="record-detail">
     <div v-viewer class="images" ref="img">
-      <lazy-img viewer v-for="img in item.images" :key="img.src" :alt="img.alt" :src="img.src" :size="['300px', '300px']" :title="img.alt"/>
+      <lazy-img
+        viewer
+        v-for="img in item.images"
+        :key="img.src"
+        :alt="img.alt"
+        :src="img.src"
+        :size="['300px', '300px']"
+        :title="img.alt"
+      />
     </div>
     <div class="text">
-      <p :title="'作成于 '+$options.filters.formattime(item.time)+'，更新于 '+$options.filters.formattime(item.modifyTime)">
-        <svg-icon name="write"/>
+      <p
+        :title="'作成于 ' + $options.filters.formattime(item.time) + '，更新于 ' + $options.filters.formattime(item.modifyTime)"
+      >
+        <svg-icon name="write" />
         <time>{{ item.time | time }}</time>
       </p>
-      <article class="--markdown" v-html="text"></article>
+      <article ref="markdown" class="--markdown" v-html="html"></article>
     </div>
   </div>
 </template>
 
 <script>
-import {recordList} from "~/utils/data";
-import {cloneDeep} from "lodash/lang";
+import { recordList } from "~/utils/data";
+import { cloneDeep } from "lodash/lang";
+import { afterInsertHtml, parseMarkdown } from "~/utils/markdown";
 
 export default {
   name: "index",
-  data() {
-    return {
-    }
-  },
-  async asyncData({params}) {
+  async asyncData({ params }) {
     const id = parseInt(params.id);
     const item = recordList.find(record => record.id === id);
-    const text = (await import(`!!raw-loader!~/rebuild/records/${id}.html`)).default;
+    const markdown = (await import(`!!raw-loader!~/rebuild/records/${id}.md`)).default;
+    const html = parseMarkdown(markdown);
     return {
       item: cloneDeep(item),
-      text
+      html
     }
   },
+  mounted() {
+    afterInsertHtml(this.$refs.markdown);
+  }
 }
 </script>
 
 <style lang="scss">
 @import "assets/style/var";
-.record-detail{
+.record-detail {
   margin: 30px 20px 80px 20px;
   min-width: 800px;
   .images {
@@ -49,7 +60,7 @@ export default {
       max-height: 300px;
     }
   }
-  .text{
+  .text {
     margin-top: 10px;
     > p {
       border-bottom: 1px solid #b9b9b9;
@@ -57,18 +68,18 @@ export default {
         width: 16px;
         height: 16px;
       }
-      time{
+      time {
         font-size: 12px;
         line-height: 16px;
       }
     }
-    article{
+    article {
       padding: 8px;
     }
   }
 }
-@include mobile{
-  .record-detail{
+@include mobile {
+  .record-detail {
     min-width: unset;
   }
 }

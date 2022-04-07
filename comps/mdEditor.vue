@@ -56,7 +56,6 @@ import {
   markdownTips,
   notify,
 } from "~/utils/utils";
-import hljs from 'highlight.js';
 import '~/assets/style/markdown.scss';
 import MyButton from "~/comps/button";
 
@@ -113,16 +112,6 @@ export default {
     parsedMd() {
       if (inBrowser) {
         const dom = new DOMParser().parseFromString(parseMarkdown(this.text), 'text/html');
-        // hljs
-        dom.querySelectorAll('pre>code').forEach(el => {
-          const dotes = document.createElement('div');
-          const lang = document.createElement('small');
-          const language = el.className.replace(/^.*?language-([^ ]+).*?$/, '$1');
-          lang.innerText = (hljs.getLanguage(language) || {name: language}).name;
-          el.parentElement.insertBefore(dotes, el);
-          el.parentElement.insertBefore(lang, dotes);
-          hljs.highlightBlock(el);
-        })
         // menu
         if (this.hasMenu) {
           this.menu = [];
@@ -226,7 +215,6 @@ export default {
       return {
         doEncrypt: this.doEncrypt,
         text: this.encrypt(this.text),
-        mdHtml: this.encrypt(this.$refs.markdown.innerHTML),
         menu: this.hasMenu ? this.menu.map(m => ({
           size: m.size,
           text: this.encrypt(m.text),
@@ -368,6 +356,9 @@ export default {
     > article {
       width: calc(100% - 10px);
       padding: 5px;
+      pre > code.hljs {
+        overflow: auto;
+      }
     }
     > textarea{
       width: calc(100% - 10px);

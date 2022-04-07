@@ -2,10 +2,13 @@
   <div class="knowledges-detail">
     <div class="captain flexc w100" v-viewer>
       <div class="info">
-        <lazy-img :src="item.cover" alt="cover" :size="['150px', '250px']" viewer/>
+        <lazy-img :src="item.cover" alt="cover" :size="['150px', '250px']" viewer />
         <div class="flexc">
-          <h2>{{ item.title }}
-            <a target="_blank" :href="item.link" v-if="item.link" title="链接"><svg-icon name="open-link"/></a>
+          <h2>
+            {{ item.title }}
+            <a target="_blank" :href="item.link" v-if="item.link" title="链接">
+              <svg-icon name="open-link" />
+            </a>
           </h2>
           <p>{{ item.summary }}</p>
         </div>
@@ -21,27 +24,30 @@
           <span></span>
         </div>
         <div class="book" v-else-if="item.type === 'book'">
-          <img :src="bookDivide" alt="book"/>
+          <img :src="bookDivide" alt="book" />
           <span></span>
         </div>
         <div class="film" v-else>
-          <svg-icon name="film-roll"/>
+          <svg-icon name="film-roll" />
           <span></span>
         </div>
       </div>
-      <article ref="markdown" class="--markdown" v-html="html"/>
-      <span class="modify">更新于：<time>{{ item.modifyTime | formattime }}</time></span>
+      <article ref="markdown" class="--markdown" v-html="html" />
+      <span class="modify">
+        更新于：
+        <time>{{ item.modifyTime | formattime }}</time>
+      </span>
     </div>
   </div>
 </template>
 
 <script>
 import '~/assets/style/markdown.scss';
-import {knowledgeList} from "~/utils/data";
-import {cloneDeep} from "lodash/lang";
+import { knowledgeList } from "~/utils/data";
+import { cloneDeep } from "lodash/lang";
 import bookDivide from '~/assets/image/book-divide.png';
 import filmDivide from '~/assets/image/film-divide.png';
-import {afterInsertHtml} from "~/utils/markdown";
+import { afterInsertHtml, parseMarkdown } from "~/utils/markdown";
 
 export default {
   name: "index",
@@ -51,15 +57,16 @@ export default {
       filmDivide,
     }
   },
-  head () {
+  head() {
     return {
       title: this.item?.title
     }
   },
-  async asyncData({params}) {
+  async asyncData({ params }) {
     const id = parseInt(params.id);
     const item = cloneDeep(knowledgeList.find(md => md.id === id));
-    const html = (await import(`!!raw-loader!~/rebuild/knowledges/${id}.html`)).default;
+    const markdown = (await import(`!!raw-loader!~/rebuild/knowledges/${id}.md`)).default;
+    const html = parseMarkdown(markdown);
     return {
       html,
       item
@@ -77,18 +84,18 @@ export default {
 @use "sass:math";
 @import "assets/style/var";
 
-.knowledges-detail{
+.knowledges-detail {
   margin: 0 15px 80px 15px;
-  .captain{
+  .captain {
     margin: auto;
     position: relative;
     width: 900px;
-    >.info {
+    > .info {
       margin: 40px 0 20px 0;
       padding-bottom: 20px;
       position: relative;
       display: flex;
-      .--lazy-img{
+      .--lazy-img {
         flex-shrink: 0;
         border: 1px solid #919191;
         box-shadow: 0 0 16px #4f4f4f;
@@ -98,15 +105,15 @@ export default {
           object-fit: contain;
         }
       }
-      div{
-        h2{
+      div {
+        h2 {
           text-align: center;
           margin-bottom: 15px;
           position: relative;
           width: 100%;
           font-family: $font-source-han-sans;
           word-break: break-word;
-          a{
+          a {
             position: absolute;
             display: none;
             margin-left: 8px;
@@ -122,18 +129,18 @@ export default {
             }
           }
         }
-        p{
+        p {
           font-family: $font-source-han-sans;
           font-size: 13px;
           line-height: 24px;
-          letter-spacing: .15px;
+          letter-spacing: 0.15px;
           padding-left: 20px;
           white-space: pre-wrap;
           color: #2c2c2c;
         }
       }
     }
-    >.divider {
+    > .divider {
       width: 100%;
       height: 0;
       overflow: visible;
@@ -142,7 +149,7 @@ export default {
         position: relative;
         $size: 26px;
         $duration: 0.8s;
-        .pacman{
+        .pacman {
           position: absolute;
           left: 0;
           top: 0;
@@ -150,7 +157,7 @@ export default {
           height: $size;
           width: $size;
           z-index: 2;
-          .eye{
+          .eye {
             position: absolute;
             top: math.div($size, 6);
             left: math.div($size, 2.8);
@@ -159,13 +166,13 @@ export default {
             border-radius: 50%;
             background-color: #372c6c;
           }
-          span{
+          span {
             position: absolute;
             top: 0;
             left: 0;
             height: $size;
             width: $size;
-            &:before{
+            &:before {
               content: "";
               position: absolute;
               left: 0;
@@ -174,71 +181,71 @@ export default {
               background-color: #ffad4b;
             }
           }
-          .top{
+          .top {
             -webkit-animation: animtop 0.5s infinite;
             animation: animtop $duration infinite;
-            &:before{
+            &:before {
               top: 0;
               border-radius: $size $size 0px 0px;
             }
           }
-          .left:before{
+          .left:before {
             content: none;
           }
-          .bottom{
+          .bottom {
             -webkit-animation: animbottom $duration infinite;
             animation: animbottom $duration infinite;
-            &:before{
+            &:before {
               bottom: 0;
               border-radius: 0px 0px $size $size;
             }
           }
-          @-webkit-keyframes animtop{
+          @-webkit-keyframes animtop {
             0%,
-            100%{
+            100% {
               -webkit-transform: rotate(0deg);
               transform: rotate(0deg);
             }
-            50%{
+            50% {
               -webkit-transform: rotate(-45deg);
               transform: rotate(-45deg);
             }
           }
-          @keyframes animtop{
+          @keyframes animtop {
             0%,
-            100%{
+            100% {
               -webkit-transform: rotate(0deg);
               transform: rotate(0deg);
             }
-            50%{
+            50% {
               -webkit-transform: rotate(-45deg);
               transform: rotate(-45deg);
             }
           }
-          @-webkit-keyframes animbottom{
+          @-webkit-keyframes animbottom {
             0%,
-            100%{
+            100% {
               -webkit-transform: rotate(0deg);
               transform: rotate(0deg);
             }
-            50%{
+            50% {
               -webkit-transform: rotate(45deg);
               transform: rotate(45deg);
             }
           }
-          @keyframes animbottom{
+          @keyframes animbottom {
             0%,
-            100%{
+            100% {
               -webkit-transform: rotate(0deg);
               transform: rotate(0deg);
             }
-            50%{
+            50% {
               -webkit-transform: rotate(45deg);
               transform: rotate(45deg);
             }
           }
         }
-        >span{
+        > span {
           width: calc(100% - 20px);
           position: absolute;
           z-index: 1;
@@ -249,16 +256,17 @@ export default {
           border-top: 4px dotted #838383;
           animation: dotted-move $duration linear infinite;
           @keyframes dotted-move {
-            0%{
+            0% {
               transform: translateY(-50%) translateX(0);
             }
-            100%{
+            100% {
               transform: translateY(-50%) translateX(-8px);
             }
           }
         }
       }
-      .book, .film {
+      .book,
+      .film {
         position: relative;
         width: 100%;
         img {
@@ -285,7 +293,7 @@ export default {
           right: 8px;
           bottom: 0;
           animation: rotate 5s linear infinite;
-          @keyframes rotate{
+          @keyframes rotate {
             0% {
               transform: rotate(0);
             }
@@ -299,10 +307,10 @@ export default {
         }
       }
     }
-    >article {
+    > article {
       width: 800px;
     }
-    >.modify {
+    > .modify {
       font-size: 12px;
       margin-left: auto;
       margin-top: 40px;
@@ -310,7 +318,7 @@ export default {
     }
   }
 }
-@include mobile{
+@include mobile {
   .knowledges-detail {
     width: 100%;
     margin: 0 0 80px 0;
@@ -318,9 +326,9 @@ export default {
       width: calc(100% - 20px) !important;
       max-width: unset;
       min-width: unset;
-      >.info {
+      > .info {
         flex-direction: column;
-        .--lazy-img{
+        .--lazy-img {
           margin-bottom: 30px;
           width: 60%;
           img {
@@ -328,7 +336,7 @@ export default {
           }
         }
         div {
-          h2{
+          h2 {
             a {
               display: unset;
               position: relative;
@@ -342,7 +350,7 @@ export default {
           }
         }
       }
-      >article {
+      > article {
         width: 100%;
       }
     }

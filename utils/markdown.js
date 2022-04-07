@@ -1,14 +1,15 @@
 import showdown from 'showdown';
-import {inBrowser, LazyImgComp, SvgIconComp, timeStamp} from "~/utils/utils";
+import { inBrowser, LazyImgComp, SvgIconComp, timeStamp } from "~/utils/utils";
 import PerfectScrollbar from "perfect-scrollbar";
-import {viewerAttr} from "~/plugins/viewer";
+import { viewerAttr } from "~/plugins/viewer";
 import ClipboardJS from "clipboard";
-import {notify} from "./utils";
+import { notify } from "./utils";
+import hljs from 'highlight.js';
 
 const
   paragraphTabExtension = {
     type: 'lang',
-    regex: /(^|[^\\])<<>>/g,
+    regex: '(^|[^\\\\])<<>>',
     replace: '$1&emsp;&emsp;'
   },
   headerExtension = {
@@ -23,12 +24,12 @@ const
   },
   blankLinkExtension = {
     type: 'lang',
-    regex: /(^|[^\\])#\[(.*?)]\((.*?)\)/g,
+    regex: '(^|[^\\\\])#\\[(.*?)]\\((.*?)]\\)',
     replace: '$1<a target="_blank" href="$3">$2</a>'
   },
   commonImgExtension = {
     type: 'lang',
-    regex: /(^|[^\\])!\[(.*?)]\((.*?)\)/g,
+    regex: '(^|[^\\\\])!\\[(.*?)]\\((.*?)\\)',
     replace: (a, prefix, alt, src) => {
       // sticker
       if (alt === 'sticker') {
@@ -42,22 +43,22 @@ const
       // with dimension
       const [_, alt_, w, h] = mather;
       let justHeight = !w;
-      return `${prefix}<span class="image-container${justHeight?' just-height':''}"><img ${viewerAttr} alt="${alt_}" title="${alt_}" style="${w ? `width: ${w} !important;` : ''}${h ? `height: ${h} !important;` : ''}" src="${src}"/><small class="desc">${alt_}</small></span>`
+      return `${prefix}<span class="image-container${justHeight ? ' just-height' : ''}"><img ${viewerAttr} alt="${alt_}" title="${alt_}" style="${w ? `width: ${w} !important;` : ''}${h ? `height: ${h} !important;` : ''}" src="${src}"/><small class="desc">${alt_}</small></span>`
     }
   },
   colorTextExtension = {
     type: 'lang',
-    regex: /(^|[^\\])-\(([#a-zA-Z0-9]+): (.*?)\)-/g,
+    regex: '(^|[^\\\\])-\\(([#a-zA-Z0-9]+): (.*?)\\)-',
     replace: `$1<span style="color: $2">$3</span>`
   },
   htmlExtension = {
     type: 'lang',
-    regex: /(^|[^\\])\[html]([\s\S]*?)\[\/html]/g,
+    regex: '(^|[^\\\\])\\[html]([\\s\\S]*?)\\[\\/html]',
     replace: `$1<span class="raw-html">$2</span>`
   },
   youtubeExtension = {
     type: 'lang',
-    regex: /(^|[^\\])\[youtube]\[(.+?)]\((https?:\/\/.*?)\)\[\/youtube]/g,
+    regex: '(^|[^\\\\])\\[youtube]\\[(.+?)]\\((https?:\\/\\/.*?)\\)\\[\\/youtube]',
     replace: `$1<div class="embed-video youtube">
                         <iframe src="$3" title="$2" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         <small class="desc">$2</small>
@@ -65,7 +66,7 @@ const
   },
   biliExtension = {
     type: 'lang',
-    regex: /(^|[^\\])\[bili]\[(.+?)]\((https?:\/\/.*?)\)\[\/bili]/g,
+    regex: '(^|[^\\\\])\\[bili]\\[(.+?)]\\((https?:\\/\\/.*?)\\)\\[\\/bili]',
     replace: `$1<div class="embed-video bili">
                         <iframe src="$3" title="$2" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         <small class="desc">$2</small>
@@ -87,19 +88,31 @@ const options = {
   strikethrough: true
 }
 let converter = null;
-if (inBrowser) {
-  converter = new showdown.Converter({
-    ...options,
-    extensions: [headerExtension, paragraphTabExtension, blankLinkExtension, commonImgExtension,
-      htmlExtension, colorTextExtension, fieldExtension, youtubeExtension, biliExtension]
-  });
-}
+// if (inBrowser) {
+converter = new showdown.Converter({
+  ...options,
+  extensions: [headerExtension, paragraphTabExtension, blankLinkExtension, commonImgExtension,
+    htmlExtension, colorTextExtension, fieldExtension, youtubeExtension, biliExtension]
+});
+// }
 
 export function parseMarkdown(text) {
   return converter ? converter.makeHtml(text) : '';
 }
 
 export function afterInsertHtml(mdEl, forEdit = false) {
+  if (inBrowser) {
+    // hljs
+    mdEl.querySelectorAll('pre>code').forEach(el => {
+      const dotes = document.createElement('div');
+      const lang = document.createElement('small');
+      const language = el.className.replace(/^.*?language-([^ ]+).*?$/, '$1');
+      lang.innerText = (hljs.getLanguage(language) || { name: language }).name;
+      el.parentElement.insertBefore(dotes, el);
+      el.parentElement.insertBefore(lang, dotes);
+      hljs.highlightBlock(el);
+    })
+  }
   try {
     if (!forEdit) {
       // code scrollbar
@@ -144,7 +157,7 @@ export function afterInsertHtml(mdEl, forEdit = false) {
         })
         copyBtn.title = 'copy';
         new ClipboardJS(copyBtn, {
-          target: function(trigger) {
+          target: function (trigger) {
             return trigger.parentElement.parentElement.querySelector('code');
           },
         }).on('success', e => {

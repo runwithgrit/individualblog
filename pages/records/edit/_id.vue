@@ -88,7 +88,7 @@ export default {
       }));
     },
     async updateArticle () {
-      const { text, mdHtml } = this.$refs.mdEditor.getData();
+      const { text } = this.$refs.mdEditor.getData();
       if (!text || !this.images.length || this.images.some(i => !i.src)) {
         return notify({
           title: '字段错误',
@@ -114,9 +114,6 @@ export default {
       }),{
         path: `rebuild/records/${newId}.md`,
         content: text
-      },{
-        path: `rebuild/records/${newId}.html`,
-        content: mdHtml
       }])) {
         notify({
           title: '完成！',
@@ -134,7 +131,6 @@ export default {
           json.splice(json.findIndex(v => v.id === this.id), 1);
         })], [
           {path: `rebuild/records/${this.id}.md`},
-          {path: `rebuild/records/${this.id}.html`},
         ])) {
           notify({
             title: '完成！',

@@ -18,12 +18,7 @@
             <the-tag v-for="tag in inputTags" :key="tag">{{ tag }}</the-tag>
             <p v-if="!inputTags.length">请输入标签</p>
           </div>
-          <input
-            ref="inputTag"
-            class="s100"
-            v-model="tags"
-            placeholder="请输入标签，英文逗号分隔"
-          />
+          <input ref="inputTag" class="s100" v-model="tags" placeholder="请输入标签，英文逗号分隔" />
         </div>
         <md-editor
           ref="mdEditor"
@@ -114,7 +109,7 @@ export default {
       );
     },
     async updateArticle() {
-      const { doEncrypt, text, mdHtml, menu } = this.$refs.mdEditor.getData();
+      const { doEncrypt, text, menu } = this.$refs.mdEditor.getData();
       const title = this.title;
       if (!text || !title) {
         return notify({
@@ -154,10 +149,6 @@ export default {
             path: `rebuild/articles/${newId}.md`,
             content: text,
           },
-          {
-            path: `rebuild/articles/${newId}.html`,
-            content: mdHtml,
-          },
         ])
       ) {
         notify({
@@ -184,7 +175,6 @@ export default {
               }),
             ],
             [
-              { path: `rebuild/articles/${this.id}.html` },
               { path: `rebuild/articles/${this.id}.md` },
             ]
           )
@@ -238,7 +228,7 @@ export default {
           top: 0;
           z-index: 2;
           overflow: auto;
-          >.common-tag {
+          > .common-tag {
             margin-left: 8px;
           }
           > p {
@@ -275,7 +265,8 @@ export default {
     padding: 0 10px;
     > .body {
       > .edit {
-        > input, >.tags {
+        > input,
+        > .tags {
           width: 92%;
         }
       }
