@@ -9,7 +9,7 @@ import hljs from 'highlight.js';
 const
   paragraphTabExtension = {
     type: 'lang',
-    regex: '(^|[^\\\\])<<>>',
+    regex: '(^|(?<=[^\\\\]))<<>>',
     replace: '$1&emsp;&emsp;'
   },
   headerExtension = {
@@ -24,12 +24,12 @@ const
   },
   blankLinkExtension = {
     type: 'lang',
-    regex: '(^|[^\\\\])#\\[(.*?)]\\((.*?)]\\)',
+    regex: '(^|[^\\\\])#\\[(.*?)]\\((.*?)\\)',
     replace: '$1<a target="_blank" href="$3">$2</a>'
   },
   commonImgExtension = {
     type: 'lang',
-    regex: '(^|[^\\\\])!\\[(.*?)]\\((.*?)\\)',
+    regex: '(^|(?<=[^\\\\]))!\\[(.*?)]\\((.*?)\\)',
     replace: (a, prefix, alt, src) => {
       // sticker
       if (alt === 'sticker') {
@@ -48,17 +48,17 @@ const
   },
   colorTextExtension = {
     type: 'lang',
-    regex: '(^|[^\\\\])-\\(([#a-zA-Z0-9]+): (.*?)\\)-',
+    regex: '(^|(?<=[^\\\\]))-\\(([#a-zA-Z0-9]+): (.*?)\\)-',
     replace: `$1<span style="color: $2">$3</span>`
   },
   htmlExtension = {
     type: 'lang',
-    regex: '(^|[^\\\\])\\[html]([\\s\\S]*?)\\[\\/html]',
+    regex: '(^|(?<=[^\\\\]))\\[html]([\\s\\S]*?)\\[\\/html]',
     replace: `$1<span class="raw-html">$2</span>`
   },
   youtubeExtension = {
     type: 'lang',
-    regex: '(^|[^\\\\])\\[youtube]\\[(.+?)]\\((https?:\\/\\/.*?)\\)\\[\\/youtube]',
+    regex: '(^|(?<=[^\\\\]))\\[youtube]\\[(.+?)]\\((https?:\\/\\/.*?)\\)\\[\\/youtube]',
     replace: `$1<div class="embed-video youtube">
                         <iframe src="$3" title="$2" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         <small class="desc">$2</small>
@@ -66,7 +66,7 @@ const
   },
   biliExtension = {
     type: 'lang',
-    regex: '(^|[^\\\\])\\[bili]\\[(.+?)]\\((https?:\\/\\/.*?)\\)\\[\\/bili]',
+    regex: '(^|(?<=[^\\\\]))\\[bili]\\[(.+?)]\\((https?:\\/\\/.*?)\\)\\[\\/bili]',
     replace: `$1<div class="embed-video bili">
                         <iframe src="$3" title="$2" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         <small class="desc">$2</small>
