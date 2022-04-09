@@ -3,6 +3,7 @@
     <div class="middle flexc">
       <span>Copyright (c) 2019-2022 <b><a target="_blank" :href="'https://github.com/'+user">{{ nick }}</a> | {{ hostName }}</b></span>
       <span class="flex"><a class="rss" target="_blank" href="/sitemap.xml" title="rss">RSS <svg-icon name="rss"/></a>| Powered By <a class="nuxt" href="https://nuxtjs.org/" target="_blank">Nuxtjs</a></span>
+      <span class="flex upyun" v-if="upyun">本站由<a target="_blank" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="/upyun.png"/></a>提供云存储服务</span>
     </div>
   </footer>
 </template>
@@ -17,6 +18,7 @@ export default {
     return {
       user: config.githubName,
       nick: config.nickName,
+      upyun: config.upyun,
       hostName: inBrowser ? location.hostname : ''
     }
   }
@@ -35,8 +37,8 @@ export default {
     b{
       transition: $common-transition;
     }
-    span:last-of-type{
-      margin: 6px 0;
+    span:not(:first-of-type){
+      margin-top: 6px;
     }
   }
   &:hover{
@@ -68,6 +70,12 @@ export default {
     &:hover {
       transform: scale(1.1);
       fill: #00c9c9;
+    }
+  }
+  .upyun {
+    img {
+      height: 32px;
+      margin: 0 8px;
     }
   }
 }
