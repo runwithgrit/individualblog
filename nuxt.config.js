@@ -6,6 +6,7 @@ import { execSync } from "child_process";
 
 export default {
   // Target: https://go.nuxtjs.dev/config-target
+  telemetry: false,
   target: 'static',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
