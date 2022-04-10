@@ -110,7 +110,7 @@ export function afterInsertHtml(mdEl, forEdit = false) {
       lang.innerText = (hljs.getLanguage(language) || { name: language }).name;
       el.parentElement.insertBefore(dotes, el);
       el.parentElement.insertBefore(lang, dotes);
-      hljs.highlightBlock(el);
+      hljs.highlightElement(el);
     })
   }
   try {
