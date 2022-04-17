@@ -6,7 +6,7 @@ import ClipboardJS from "clipboard";
 import { notify } from "./utils";
 import hljs from 'highlight.js';
 
-/* FIXME hack: recursive regex replace. because fucking safari don't suppot lookbehind, all of `(^|(?>=[^\\]))` need to be changed to `(^|[^\\])` */
+/* FIXME hack: recursive regex replace. because the fucking safari don't suppot lookbehind, all of `(^|(?>=[^\\]))` need to be changed to `(^|[^\\])` */
 function recursiveReplace(text, regex, cb) {
   let result = text;
   while (regex.test(result)) {
@@ -37,7 +37,7 @@ const
   blankLinkExtension = {
     type: 'lang',
     filter(text, converter) {
-      return recursiveReplace(text, /(^|\n)(#{1,6})\s*(.+?)\s*(?=\n|$)/, (a, prefix, txt, link) => {
+      return recursiveReplace(text, /(^|[^\\])#\[(.*?)]\((.*?)\)/, (a, prefix, txt, link) => {
         return `${prefix}<a target="_blank" href="${link}">${txt}</a>`
       })
     }
