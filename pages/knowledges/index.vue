@@ -1,11 +1,11 @@
 <template>
   <div class="knowledge-list">
     <nav class="flex">
-      <span :class="{active: !typeNow}" @click="typeNow=null">全部<b>{{ getFilteredListLength() }}</b></span>
+      <span :class="{active: !currentTab}" @click="goTo('')">全部<b>{{ getFilteredListLength() }}</b></span>
       <span v-for="type in knowledgeTypeList"
             :key="type.key"
-            :class="{active: type.key === typeNow}"
-            @click="typeNow=type.key">
+            :class="{active: type.key === currentTab}"
+            @click="goTo(type.key)">
         {{ type.name }}
         <b>{{ getFilteredListLength(type.key) }}</b>
       </span>
@@ -27,20 +27,28 @@ export default {
   name: "index",
   data () {
     return {
-      knowledgeTypeList,
-      typeNow: null
+      knowledgeTypeList
     }
   },
   computed: {
+    currentTab() {
+      const tp = this.$route.query.type;
+      return knowledgeTypeList.find(v => v.key === tp) ? tp : knowledgeList[0].key;
+    },
     filteredList () {
-      if (!this.typeNow) return knowledgeList;
-      return knowledgeList.filter(item => item.type === this.typeNow);
+      if (!this.currentTab) return knowledgeList;
+      return knowledgeList.filter(item => item.type === this.currentTab);
     }
   },
   methods: {
     getFilteredListLength (type) {
       if (!type) return knowledgeList.length;
       return knowledgeList.filter(item => item.type === type).length;
+    },
+    goTo(tp) {
+      try {
+        this.$router.replace({query: {type: tp}});
+      } catch(e) {}
     }
   }
 }
